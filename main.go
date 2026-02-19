@@ -1,8 +1,13 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func main() {
@@ -50,11 +55,40 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 	// 3. Get the username and password from the inputs
 	username := r.FormValue("username")
-	// password := r.FormValue("password") // You can use this later
+	password := r.FormValue("password")
 
-	// 4. Print it to the terminal (so you can see it works!)
+	// 4. Print it to the terminal
 	log.Printf("Login attempt from user: %s\n", username)
 
-	// 5. Send a simple message back to the browser
-	w.Write([]byte("Login request received! Welcome " + username))
+	// MongoDB Connection URI
+	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+	client, err := mongo.Connect(context.TODO(), clientOptions)
+	if err != nil {
+		log.Printf("DB Connection Error: %v", err)
+		http.Error(w, "Database Error", http.StatusInternalServerError)
+		return
+	}
+	defer client.Disconnect(context.TODO())
+
+	// Define a struct to hold the user data
+	var result struct {
+		Username string `bson:"username"`
+		Password string `bson:"password"`
+	}
+
+	// Get a handle for your collection
+	collection := client.Database("test").Collection("users")
+
+	// Create a filter to find the user
+	filter := bson.M{"username": username, "password": password}
+
+	// Find the user
+	err = collection.FindOne(context.TODO(), filter).Decode(&result)
+	if err != nil {
+		// If err is present, user was not found or password incorrect
+		http.Error(w, "Invalid Credentials", http.StatusUnauthorized)
+		return
+	}
+
+	w.Write([]byte("Welcome, " + result.Username + "! Access Granted via MongoDB."))
 }
