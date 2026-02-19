@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go Login</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="login-wrapper">
+            <div class="mascot-container">
+                <!-- We will place the generated Gopher image here -->
+                <img src="/static/images/gopher_login.png" alt="Cute Gopher Mascot" class="mascot-image" onerror="this.onerror=null; this.src='https://go.dev/images/gophers/biplane.svg'">
+            </div>
+            <div class="login-card">
+                <div class="header">
+                    <h1>Welcome Back!</h1>
+                    <p>Enter your credentials to access the Go Learning Project.</p>
+                </div>
+                <form class="login-form" action="/login" method="POST">
+                    <div class="input-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" placeholder="gopher123" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="login-btn">Log In</button>
+                    <div class="footer-links">
+                        <a href="#">Forgot Password?</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
