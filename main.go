@@ -57,6 +57,11 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue("username")
 	password := r.FormValue("password")
 
+        //  Input validation
+        if username == "" || password == "" {
+	http.Error(w, "Username and Password are required", http.StatusBadRequest)
+	return
+}
 	// 4. Print it to the terminal
 	log.Printf("Login attempt from user: %s\n", username)
 
